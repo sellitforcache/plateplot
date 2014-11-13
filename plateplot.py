@@ -1,4 +1,6 @@
 #! /usr/bin/env python
+# Script to plot neutron image gel from BASReader in neutra lab in SINQ hall
+# Ryan M. Bergmann, Nov 13, 2014.  ryan.bergmann@psi.ch, ryanmbergmann@gmail.com
 
 import pylab as pl
 import sys
