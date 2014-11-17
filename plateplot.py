@@ -51,6 +51,9 @@ else:
 	print "Image has %d arrays, unhandled." % img_arraynum
 	exit(0)
 
+### convert data to float64
+imgmat = numpy.array(imgmat,dtype=numpy.float64)
+
 ### image parameters
 res   = 50.0e-6 * 1000
 pix_x = imgmat.shape[1]
@@ -58,7 +61,11 @@ pix_y = imgmat.shape[0]
 ext_x = pix_x * res
 ext_y = pix_y * res
 
-if plottype=="plot" or plottype=="averages":
+### convert from log scale
+imgmat=numpy.power(10,numpy.divide(imgmat,10000))
+imgmat=numpy.divide(imgmat,10000)
+
+if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 	### main plot
 	plt = pl.plt
 	ax = plt.subplot(1,1,1)
@@ -125,6 +132,18 @@ if plottype=="plot" or plottype=="averages":
 		ax.set_xlabel("x (mm)")
 		ax.set_ylabel("Average counts")
 		ax.grid("on")
+		pl.show()
+	elif plottype=="total_average":
+		loc_x2=loc_x
+		loc_x1=width
+		### show block
+		ax.fill_between([loc_x1*res,loc_x2*res],[loc_y1*res,loc_y1*res],[loc_y2*res,loc_y2*res],color='k',alpha=0.6)
+		### set image extent
+		ax.set_xlim([0,pix_x*res])
+		ax.set_ylim([0,pix_y*res])
+		### calculate entire mean
+		blockmean = numpy.mean(imgmat[loc_y1:loc_y2,loc_x1:loc_x2])
+		ax.set_title(fname+" BLOCK AVG = %f"%blockmean)
 		pl.show()
 	else:
 		pl.show()
