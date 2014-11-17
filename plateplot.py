@@ -71,7 +71,7 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 	ax = plt.subplot(1,1,1)
 	imgplot=ax.imshow(imgmat, interpolation='bicubic', extent=[0,ext_x,0,ext_y], origin="lower", cmap="spectral")#, norm=PowerNorm(1, vmin=50000, vmax=100000))
 	cbar=pl.colorbar(imgplot)
-	cbar.set_label("Counts")
+	cbar.set_label("Counts (A.U.)")
 	ax.set_title(fname)
 	ax.set_xlabel("x (mm)")
 	ax.set_ylabel("y (mm)")
@@ -81,8 +81,8 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		row1_lower = loc_y1-width/2
 		row2_upper = loc_y2+width/2
 		row2_lower = loc_y2-width/2
-		col_upper = loc_x+width/2
-		col_lower = loc_x-width/2
+		col_upper  = loc_x +width/2
+		col_lower  = loc_x -width/2
 		### set a line at x
 		ax.plot([loc_x*res,loc_x*res],[0,pix_y*res],color='r',linestyle="--")
 		ax.fill_between([col_lower*res,col_upper*res],[0,0],[pix_y*res,pix_y*res],color='r',alpha=0.4)
@@ -106,7 +106,7 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		ax.plot(numpy.multiply(range(0,pix_y),res),avg_y,color='r')
 		ax.set_title("Vertical average over %d pixels at x=%d" % (width,loc_x))
 		ax.set_xlabel("y (mm)")
-		ax.set_ylabel("Average counts")
+		ax.set_ylabel("Average counts (A.U.)")
 		ax.grid("on")
 		pl.show()
 		### make horizontal average plot at loc_y1
@@ -116,9 +116,9 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		for col in range(0,pix_x):
 			avg_x.append(numpy.mean(imgmat[row1_lower:row1_upper,col]))
 		ax.plot(numpy.multiply(range(0,pix_x),res),avg_x,color='b')
-		ax.set_title("Horizontal average over %d pixels at y=%d" % (width,loc_y2))
+		ax.set_title("Horizontal average over %d pixels at y=%d" % (width,loc_y1))
 		ax.set_xlabel("x (mm)")
-		ax.set_ylabel("Average counts")
+		ax.set_ylabel("Average counts (A.U.)")
 		ax.grid("on")
 		pl.show()
 		### make horizontal average plot at loc_y2
@@ -130,7 +130,7 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		ax.plot(numpy.multiply(range(0,pix_x),res),avg_x,color='g')
 		ax.set_title("Horizontal average over %d pixels at y=%d" % (width,loc_y2))
 		ax.set_xlabel("x (mm)")
-		ax.set_ylabel("Average counts")
+		ax.set_ylabel("Average counts (A.U.)")
 		ax.grid("on")
 		pl.show()
 	elif plottype=="total_average":
@@ -143,7 +143,7 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		ax.set_ylim([0,pix_y*res])
 		### calculate entire mean
 		blockmean = numpy.mean(imgmat[loc_y1:loc_y2,loc_x1:loc_x2])
-		ax.set_title(fname+" BLOCK AVG = %f"%blockmean)
+		ax.set_title(fname+" BLOCK AVG (A.U.) = %f"%blockmean)
 		pl.show()
 	else:
 		pl.show()
