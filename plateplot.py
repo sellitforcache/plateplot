@@ -67,14 +67,16 @@ imgmat=numpy.divide(imgmat,10000)
 
 if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 	### main plot
-	plt = pl.plt
-	ax = plt.subplot(1,1,1)
+	p = pl.plt
+	ax = p.subplot(1,1,1)
 	imgplot=ax.imshow(imgmat, interpolation='bicubic', extent=[0,ext_x,0,ext_y], origin="lower", cmap="spectral")#, norm=PowerNorm(1, vmin=50000, vmax=100000))
 	cbar=pl.colorbar(imgplot)
 	cbar.set_label("Counts (A.U.)")
 	ax.set_title(fname)
 	ax.set_xlabel("x (mm)")
 	ax.set_ylabel("y (mm)")
+	#ax.set_aspect(pix_y/pix_x)
+	#fig.set_size_inches(18.5,5.0)
 	if plottype=="averages":  ### do additional tasks if reqested
 		### calc limits
 		row1_upper = loc_y1+width/2
@@ -95,7 +97,9 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		### set image extent
 		ax.set_xlim([0,pix_x*res])
 		ax.set_ylim([0,pix_y*res])
-		### show first plot
+		### save and show first plot
+		fig=ax.get_figure()
+		fig.savefig(fname+"_fig.pdf",dpi=300)
 		pl.show()
 		### make vertical average plot at loc_x
 		plt = pl.plt
@@ -108,6 +112,15 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		ax.set_xlabel("y (mm)")
 		ax.set_ylabel("Average counts (A.U.)")
 		ax.grid("on")
+		fig=ax.get_figure()
+		fig.savefig(fname+"_vert.pdf",dpi=300)
+		old_axis=ax.axis()
+		if fname=="TriCS":
+			ax.axis([50.0,150.0,100,130])
+		elif fname=="HRPT":
+			ax.axis([60.0,230.0,23,30])
+		fig.savefig(fname+"_vert_zoom.pdf",dpi=300)
+		ax.axis(old_axis)
 		pl.show()
 		### make horizontal average plot at loc_y1
 		plt = pl.plt
@@ -120,6 +133,15 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		ax.set_xlabel("x (mm)")
 		ax.set_ylabel("Average counts (A.U.)")
 		ax.grid("on")
+		fig=ax.get_figure()
+		fig.savefig(fname+"_horiz1.pdf",dpi=300)
+		old_axis=ax.axis()
+		if fname=="TriCS":
+			ax.axis([70.0,130.0,100,130])
+		elif fname=="HRPT":
+			ax.axis([70.0,130.0,23,30])
+		fig.savefig(fname+"_horiz1_zoom.pdf",dpi=300)
+		ax.axis(old_axis)
 		pl.show()
 		### make horizontal average plot at loc_y2
 		plt = pl.plt
@@ -132,6 +154,15 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		ax.set_xlabel("x (mm)")
 		ax.set_ylabel("Average counts (A.U.)")
 		ax.grid("on")
+		fig=ax.get_figure()
+		fig.savefig(fname+"_horiz2.pdf",dpi=300)
+		old_axis=ax.axis()
+		if fname=="TriCS":
+			ax.axis([70.0,130.0,100,130])
+		elif fname=="HRPT":
+			ax.axis([70.0,130.0,23,30])
+		fig.savefig(fname+"_horiz2_zoom.pdf",dpi=300)
+		ax.axis(old_axis)
 		pl.show()
 	elif plottype=="total_average":
 		loc_x2=loc_x
