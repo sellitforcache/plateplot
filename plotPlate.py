@@ -67,9 +67,9 @@ imgmat=numpy.divide(imgmat,10000)
 
 if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 	### main plot
-	p = pl.plt
-	ax = p.subplot(1,1,1)
-	imgplot=ax.imshow(imgmat, interpolation='bicubic', extent=[0,ext_x,0,ext_y], origin="lower", cmap="spectral")#, norm=PowerNorm(1, vmin=50000, vmax=100000))
+	f=pl.figure(figsize=(ext_x*1.3*0.03,ext_y*0.03))
+	ax=f.gca()
+	imgplot=pl.imshow(imgmat, interpolation='bicubic', extent=[0,ext_x,0,ext_y], origin="lower", cmap="spectral")#, norm=PowerNorm(1, vmin=50000, vmax=100000))
 	cbar=pl.colorbar(imgplot)
 	cbar.set_label("Counts (A.U.)")
 	ax.set_title(fname)
@@ -99,6 +99,8 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		ax.set_ylim([0,pix_y*res])
 		### save and show first plot
 		fig=ax.get_figure()
+		#fig.tight_layout()
+		fig.set_frameon(False)
 		fig.savefig(fname+"_fig.pdf",dpi=300)
 		pl.show()
 		### make vertical average plot at loc_x
