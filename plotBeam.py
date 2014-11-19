@@ -69,7 +69,7 @@ z=[]
 time_from_zero=[]
 t=0
 
-fig=pl.figure(figsize=(8,2))
+fig=pl.figure(figsize=(8,2.1))
 ax=fig.gca()
 
 for line in datf:
@@ -87,7 +87,7 @@ total_charge = numpy.multiply(numpy.sum(numpy.array(current)),5.0)
 total_charge_str = "{:6.1f}".format(total_charge)
 ax.grid()
 ylim=ax.get_ylim()
-ax.set_ylim([ylim[0]*1.1,ylim[1]*1.1])
+ax.set_ylim([ylim[0]*1.1,max(current)*1.1])
 ax.set_xlabel("Time (s) from "+time_str[0]+", "+date_str[0])
 ax.set_ylabel(r"$\mu$A")
 ax.set_title(r"SINQ Proton Current, Total Charge = "+total_charge_str+r" $\mu$C")
