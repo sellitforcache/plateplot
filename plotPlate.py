@@ -37,17 +37,20 @@ if fname=="TriCS":
 	beamdim=[40,80] #in mm
 	center=[105,99]
 	res   = 50.0e-6 * 1000
-	lat= 5
+	latitude= 5
+	sensitivity= 10000
 elif fname=="HRPT":
 	beamdim=[40,150]   #in mm
 	center=[100,145.25]
 	res   = 50.0e-6 * 1000
-	lat= 5
+	latitude= 5
+	sensitivity= 10000
 elif fname=="EIGER":
 	beamdim=[40,150]   #in mm
 	center=[100,145.25]
-	res   = 100.0e-6 * 1000
-	lat= 5
+	res   = 100.0e-6 * 1000  #microns to mm
+	sensitivity= 10000
+	latitude= 5
 
 ### load image
 # get array numbers
@@ -75,9 +78,9 @@ ext_x = pix_x * res
 ext_y = pix_y * res
 
 ### convert from log scale
-imgmat=numpy.multiply(imgmat,lat/65535.0)
+imgmat=numpy.multiply(imgmat,latitude/65535.0)
 imgmat=numpy.power(10,imgmat)
-imgmat=numpy.multiply(imgmat,16.0/(lat*numpy.power(10,lat-1)))
+imgmat=numpy.multiply(imgmat,16.0/(latitude*sensitivity))
 
 if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 	### main plot
