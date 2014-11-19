@@ -5,7 +5,7 @@
 import pylab as pl
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d, Axes3D
-from matplotlib.colors import LogNorm, PowerNorm
+from matplotlib.colors import LogNorm, PowerNorm, Normalize
 import sys
 import numpy
 
@@ -34,11 +34,20 @@ else:
 	exit()
 
 if fname=="TriCS":
-	beamdim=[40,150] #in mm
-	center=[100,96]
+	beamdim=[40,80] #in mm
+	center=[105,99]
+	res   = 50.0e-6 * 1000
+	lat= 5
 elif fname=="HRPT":
 	beamdim=[40,150]   #in mm
-	center=[100,146]
+	center=[100,145.25]
+	res   = 50.0e-6 * 1000
+	lat= 5
+elif fname=="EIGER":
+	beamdim=[40,150]   #in mm
+	center=[100,145.25]
+	res   = 100.0e-6 * 1000
+	lat= 5
 
 ### load image
 # get array numbers
@@ -60,15 +69,15 @@ else:
 imgmat = numpy.array(imgmat,dtype=numpy.float64)
 
 ### image parameters
-res   = 50.0e-6 * 1000
 pix_x = imgmat.shape[1]
 pix_y = imgmat.shape[0]
 ext_x = pix_x * res
 ext_y = pix_y * res
 
 ### convert from log scale
-imgmat=numpy.power(10,numpy.divide(imgmat,10000))
-imgmat=numpy.divide(imgmat,10000)
+imgmat=numpy.multiply(imgmat,lat/65535.0)
+imgmat=numpy.power(10,imgmat)
+imgmat=numpy.multiply(imgmat,16.0/(lat*numpy.power(10,lat-1)))
 
 if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 	### main plot
@@ -123,12 +132,18 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		avg_y = []
 		for row in range(0,pix_y):
 			avg_y.append(numpy.mean(imgmat[row,col_lower:col_upper]))
-		ax.plot(numpy.multiply(range(0,pix_y),res),avg_y,color='r',label="at x = %d mm"%(loc_x*res))
+		p_avg =ax.plot(numpy.multiply(range(0,pix_y),res),avg_y,color='r',label="x = %d mm"%(loc_x*res))
+		v_lims=ax.get_ylim()
+		p_beam=ax.plot([beam_y1,beam_y1],[v_lims[0],v_lims[1]],color='k',linestyle='-')  ##plot beam ports
+		p_beam=ax.plot([beam_y2,beam_y2],[v_lims[0],v_lims[1]],color='k',linestyle='-')
+		p_wire=ax.plot([center[1],center[1]],[v_lims[0],v_lims[1]],color='c',linestyle='--')
+		pl.legend([p_avg[0],p_beam[0],p_wire[0]],["x = %d mm"%(loc_x*res),"Beam port boundary","Cd wire"])
 		ax.set_title("Vertical average over %d pixels" % width)
 		ax.set_xlabel("y (mm)")
 		ax.set_ylabel("Average counts (A.U.)")
+		ax.set_xlim([0,ext_y])
 		ax.grid("on")
-		ax.legend()
+		#ax.legend()
 		fig=ax.get_figure()
 		fig.savefig(fname+"_vert.pdf",dpi=300)
 		old_axis=ax.axis()
@@ -145,7 +160,7 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		avg_x = []
 		for col in range(0,pix_x):
 			avg_x.append(numpy.mean(imgmat[row1_lower:row1_upper,col]))
-		ax.plot(numpy.multiply(range(0,pix_x),res),avg_x,color='b',label="at y = %d mm"%(loc_y1*res))
+		p_avg1=ax.plot(numpy.multiply(range(0,pix_x),res),avg_x,color='b',label="y = %d mm"%(loc_y1*res))
 		#ax.set_title("Horizontal average over %d pixels at y=%d" % (width,loc_y1))
 		#ax.set_xlabel("x (mm)")
 		#ax.set_ylabel("Average counts (A.U.)")
@@ -166,12 +181,16 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		avg_x = []
 		for col in range(0,pix_x):
 			avg_x.append(numpy.mean(imgmat[row2_lower:row2_upper,col]))
-		ax.plot(numpy.multiply(range(0,pix_x),res),avg_x,color='g',label="at y = %d mm"%(loc_y2*res))
+		p_avg2=ax.plot(numpy.multiply(range(0,pix_x),res),avg_x,color='g',label="y = %d mm"%(loc_y2*res))
+		v_lims=ax.get_ylim()
+		p_beam=ax.plot([beam_x1,beam_x1],[v_lims[0],v_lims[1]],color='k',linestyle='-')  ##plot beam ports
+		p_beam=ax.plot([beam_x2,beam_x2],[v_lims[0],v_lims[1]],color='k',linestyle='-')
+		pl.legend( [p_avg1[0],p_avg2[0],p_beam[0]],["y = %d mm"%(loc_y1*res),"y = %d mm"%(loc_y2*res),"Beam port boundary"])
 		ax.set_title("Horizontal average over %d pixels"%width)
 		ax.set_xlabel("x (mm)")
 		ax.set_ylabel("Average counts (A.U.)")
-		ax.legend()
 		ax.grid("on")
+		ax.set_xlim([0,ext_x])
 		fig=ax.get_figure()
 		fig.savefig(fname+"_horiz.pdf",dpi=300)
 		old_axis=ax.axis()
