@@ -140,7 +140,7 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		p_beam=ax.plot([beam_y1,beam_y1],[v_lims[0],v_lims[1]],color='k',linestyle='-')  ##plot beam ports
 		p_beam=ax.plot([beam_y2,beam_y2],[v_lims[0],v_lims[1]],color='k',linestyle='-')
 		p_wire=ax.plot([center[1],center[1]],[v_lims[0],v_lims[1]],color='c',linestyle='--')
-		pl.legend([p_avg[0],p_beam[0],p_wire[0]],["x = %d mm"%(loc_x*res),"Beam port boundary","Cd wire"])
+		pl.legend([p_avg[0],p_beam[0],p_wire[0]],["x = %d mm"%(loc_x*res),"Port boundary","Cd wire"],loc=1)
 		ax.set_title("Vertical average over %d pixels" % width)
 		ax.set_xlabel("y (mm)")
 		ax.set_ylabel("Average counts (A.U.)")
@@ -188,7 +188,7 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		v_lims=ax.get_ylim()
 		p_beam=ax.plot([beam_x1,beam_x1],[v_lims[0],v_lims[1]],color='k',linestyle='-')  ##plot beam ports
 		p_beam=ax.plot([beam_x2,beam_x2],[v_lims[0],v_lims[1]],color='k',linestyle='-')
-		pl.legend( [p_avg1[0],p_avg2[0],p_beam[0]],["y = %d mm"%(loc_y1*res),"y = %d mm"%(loc_y2*res),"Beam port boundary"])
+		pl.legend( [p_avg1[0],p_avg2[0],p_beam[0]],["y = %d mm"%(loc_y1*res),"y = %d mm"%(loc_y2*res),"Port boundary"],loc=1)
 		ax.set_title("Horizontal average over %d pixels"%width)
 		ax.set_xlabel("x (mm)")
 		ax.set_ylabel("Average counts (A.U.)")
