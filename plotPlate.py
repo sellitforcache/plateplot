@@ -33,7 +33,12 @@ else:
 	print "                                    ...AND for '3D'     : x1, x2, y1, y2 for the range of the surface plot"
 	exit()
 
-
+if fname=="TriCS":
+	beamdim=[40,150] #in mm
+	center=[100,96]
+elif fname=="HRPT":
+	beamdim=[40,150]   #in mm
+	center=[100,146]
 
 ### load image
 # get array numbers
@@ -94,6 +99,15 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		### set a line at y2
 		ax.plot([0,pix_x*res],[loc_y2*res,loc_y2*res],color='g',linestyle="--")
 		ax.fill_between([0,pix_x*res],[row2_upper*res,row2_upper*res],[row2_lower*res,row2_lower*res],color='g',alpha=0.4)
+		### make white box for beamline
+		try:
+			beam_y1=center[1]-beamdim[1]/2
+			beam_y2=center[1]+beamdim[1]/2
+			beam_x1=center[0]-beamdim[0]/2
+			beam_x2=center[0]+beamdim[0]/2
+			ax.plot([beam_x1,beam_x2,beam_x2,beam_x1,beam_x1],[beam_y1,beam_y1,beam_y2,beam_y2,beam_y1],color='w',alpha=1)
+		except NameError:
+			pass
 		### set image extent
 		ax.set_xlim([0,pix_x*res])
 		ax.set_ylim([0,pix_y*res])
@@ -109,11 +123,12 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		avg_y = []
 		for row in range(0,pix_y):
 			avg_y.append(numpy.mean(imgmat[row,col_lower:col_upper]))
-		ax.plot(numpy.multiply(range(0,pix_y),res),avg_y,color='r')
-		ax.set_title("Vertical average over %d pixels at x=%d" % (width,loc_x))
+		ax.plot(numpy.multiply(range(0,pix_y),res),avg_y,color='r',label="at x = %d mm"%(loc_x*res))
+		ax.set_title("Vertical average over %d pixels" % width)
 		ax.set_xlabel("y (mm)")
 		ax.set_ylabel("Average counts (A.U.)")
 		ax.grid("on")
+		ax.legend()
 		fig=ax.get_figure()
 		fig.savefig(fname+"_vert.pdf",dpi=300)
 		old_axis=ax.axis()
@@ -130,40 +145,41 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		avg_x = []
 		for col in range(0,pix_x):
 			avg_x.append(numpy.mean(imgmat[row1_lower:row1_upper,col]))
-		ax.plot(numpy.multiply(range(0,pix_x),res),avg_x,color='b')
-		ax.set_title("Horizontal average over %d pixels at y=%d" % (width,loc_y1))
-		ax.set_xlabel("x (mm)")
-		ax.set_ylabel("Average counts (A.U.)")
-		ax.grid("on")
-		fig=ax.get_figure()
-		fig.savefig(fname+"_horiz1.pdf",dpi=300)
-		old_axis=ax.axis()
-		if fname=="TriCS":
-			ax.axis([70.0,130.0,100,130])
-		elif fname=="HRPT":
-			ax.axis([70.0,130.0,23,30])
-		fig.savefig(fname+"_horiz1_zoom.pdf",dpi=300)
-		ax.axis(old_axis)
-		pl.show()
+		ax.plot(numpy.multiply(range(0,pix_x),res),avg_x,color='b',label="at y = %d mm"%(loc_y1*res))
+		#ax.set_title("Horizontal average over %d pixels at y=%d" % (width,loc_y1))
+		#ax.set_xlabel("x (mm)")
+		#ax.set_ylabel("Average counts (A.U.)")
+		#ax.grid("on")
+		#fig=ax.get_figure()
+		#fig.savefig(fname+"_horiz1.pdf",dpi=300)
+		#old_axis=ax.axis()
+		#if fname=="TriCS":
+		#	ax.axis([70.0,130.0,100,130])
+		#elif fname=="HRPT":
+		#	ax.axis([70.0,130.0,23,30])
+		#fig.savefig(fname+"_horiz1_zoom.pdf",dpi=300)
+		#ax.axis(old_axis)
+		#pl.show()
 		### make horizontal average plot at loc_y2
-		plt = pl.plt
-		ax = plt.subplot(1,1,1)
+		#plt = pl.plt
+		#ax = plt.subplot(1,1,1)
 		avg_x = []
 		for col in range(0,pix_x):
 			avg_x.append(numpy.mean(imgmat[row2_lower:row2_upper,col]))
-		ax.plot(numpy.multiply(range(0,pix_x),res),avg_x,color='g')
-		ax.set_title("Horizontal average over %d pixels at y=%d" % (width,loc_y2))
+		ax.plot(numpy.multiply(range(0,pix_x),res),avg_x,color='g',label="at y = %d mm"%(loc_y2*res))
+		ax.set_title("Horizontal average over %d pixels"%width)
 		ax.set_xlabel("x (mm)")
 		ax.set_ylabel("Average counts (A.U.)")
+		ax.legend()
 		ax.grid("on")
 		fig=ax.get_figure()
-		fig.savefig(fname+"_horiz2.pdf",dpi=300)
+		fig.savefig(fname+"_horiz.pdf",dpi=300)
 		old_axis=ax.axis()
 		if fname=="TriCS":
 			ax.axis([70.0,130.0,100,130])
 		elif fname=="HRPT":
 			ax.axis([70.0,130.0,23,30])
-		fig.savefig(fname+"_horiz2_zoom.pdf",dpi=300)
+		fig.savefig(fname+"_horiz_zoom.pdf",dpi=300)
 		ax.axis(old_axis)
 		pl.show()
 	elif plottype=="total_average":

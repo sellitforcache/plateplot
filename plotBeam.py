@@ -69,7 +69,7 @@ z=[]
 time_from_zero=[]
 t=0
 
-fig=pl.figure(figsize=(8,2.5))
+fig=pl.figure(figsize=(8,2))
 ax=fig.gca()
 
 for line in datf:
