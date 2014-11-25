@@ -10,6 +10,10 @@ import sys
 import numpy
 import re
 
+### set TeX
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif')
+
 def convert2lin(imgmat,latitude,sensitivity):
 	imgmat=numpy.multiply(imgmat,latitude/65535.0)
 	imgmat=numpy.power(10,imgmat)
@@ -24,8 +28,8 @@ def read_mcstats_dat(fname,res_x,res_y,pix_x,pix_y,ext_x,ext_y):
 		#print a.group(1)
 		if a.group(1)=="xylimits":
 			substr = a.group(2).split()
-			ext_x = float(substr[1])-float(substr[0])*10.0 #most likely cm to mm, BE SURE TO CHECK in the file by hand. this script does not read it!
-			ext_y = float(substr[3])-float(substr[2])*10.0
+			ext_x = (float(substr[1])-float(substr[0]))*10.0 #most likely cm to mm, BE SURE TO CHECK in the file by hand. this script does not read it!
+			ext_y = (float(substr[3])-float(substr[2]))*10.0
 			print "extent x/y", ext_x, ext_y
 		elif a.group(1)=="type":
 			#print a.group(2)
@@ -111,32 +115,38 @@ pix_y=0
 ext_x=0.0
 ext_y=0.0
 if fname=="TriCS":
+	total_current = 570.0
 	beamdim=[40,80] #in mm
 	center=[105,99]
 	res_x = res_y = 50.0e-6 * 1000
 	latitude= 5
 	sensitivity= 10000
 	imgmat,res_x,res_y,pix_x,pix_y,ext_x,ext_y = read_tiff(fname,res_x,res_y,pix_x,pix_y,ext_x,ext_y)
+	numpy.divide(imgmat,total_current)
 elif fname=="HRPT":
+	total_current = 200.5
 	beamdim=[40,150]   #in mm
 	center=[100,145.25]
 	res_x = res_y = 50.0e-6 * 1000
 	latitude= 5
 	sensitivity= 10000
 	imgmat,res_x,res_y,pix_x,pix_y,ext_x,ext_y = read_tiff(fname,res_x,res_y,pix_x,pix_y,ext_x,ext_y)
+	numpy.divide(imgmat,total_current)
 elif fname=="EIGER":
+	total_current = 261.0
 	beamdim=[60,300]   #in mm
 	center=[101,215]
 	res_x = res_y = 100.0e-6 * 1000  #microns to mm
 	sensitivity= 10000
 	latitude= 5
 	imgmat,res_x,res_y,pix_x,pix_y,ext_x,ext_y = read_tiff(fname,res_x,res_y,pix_x,pix_y,ext_x,ext_y)
+	numpy.divide(imgmat,total_current)
 else:
 	a=re.match("eiger_mcstas/([a-zA-Z0-9.+\-_ ]+)",fname)
 	if a:
 		imgmat,res_x,res_y,pix_x,pix_y,ext_x,ext_y = read_mcstats_dat(fname,res_x,res_y,pix_x,pix_y,ext_x,ext_y)
 		beamdim=[60,300]   #in mm
-		center=[101,215]
+		center=[100,200]
 		sensitivity= 10000
 		latitude=5
 	else:
@@ -153,10 +163,10 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 	ax=f.gca()
 	imgplot=pl.imshow(imgmat, interpolation='bicubic', extent=[0,ext_x,0,ext_y], origin="lower", cmap="spectral")#, norm=PowerNorm(1, vmin=50000, vmax=100000))
 	cbar=pl.colorbar(imgplot)
-	cbar.set_label("Counts (A.U.)")
+	cbar.set_label(r"Counts (A.U. / $\mu$C)")
 	ax.set_title(fname)
-	ax.set_xlabel("x (mm)")
-	ax.set_ylabel("y (mm)")
+	ax.set_xlabel(r"x (mm)")
+	ax.set_ylabel(r"y (mm)")
 	#ax.set_aspect(pix_y/pix_x)
 	#fig.set_size_inches(18.5,5.0)
 	if plottype=="averages":  ### do additional tasks if reqested
@@ -208,7 +218,7 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		pl.legend([p_avg[0],p_beam[0],p_wire[0]],["x = %d mm"%(loc_x*res_x),"Port boundary","Cd wire"],loc=1)
 		ax.set_title("Vertical average over %d pixels" % width)
 		ax.set_xlabel("y (mm)")
-		ax.set_ylabel("Average counts (A.U.)")
+		ax.set_ylabel(r"Counts (A.U. / $\mu$C)")
 		ax.set_xlim([0,ext_y])
 		ax.grid("on")
 		#ax.legend()
@@ -256,7 +266,7 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		pl.legend( [p_avg1[0],p_avg2[0],p_beam[0]],["y = %d mm"%(loc_y1*res_y),"y = %d mm"%(loc_y2*res_y),"Port boundary"],loc=1)
 		ax.set_title("Horizontal average over %d pixels"%width)
 		ax.set_xlabel("x (mm)")
-		ax.set_ylabel("Average counts (A.U.)")
+		ax.set_ylabel(r"Counts (A.U. / $\mu$C)")
 		ax.grid("on")
 		ax.set_xlim([0,ext_x])
 		fig=ax.get_figure()
@@ -279,7 +289,7 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		ax.set_ylim([0,pix_y*res])
 		### calculate entire mean
 		blockmean = numpy.mean(imgmat[loc_y1:loc_y2,loc_x1:loc_x2])
-		ax.set_title(fname+" BLOCK AVG (A.U.) = %f"%blockmean)
+		ax.set_title(fname+r" BLOCK AVG (A.U. / $\mu$C) = %f"%blockmean)
 		pl.show()
 	else:
 		pl.show()
