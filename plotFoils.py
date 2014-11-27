@@ -51,20 +51,15 @@ gf1_activity = numpy.multiply( gf1_activity , numpy.exp( au198_lambda * (gf1_mea
 gf2_activity = numpy.multiply( gf2_activity , numpy.exp( au198_lambda * (gf2_mea_time - gf2_irr_time) ) )
 gf3_activity = numpy.multiply( gf3_activity , numpy.exp( au198_lambda * (gf3_mea_time - gf3_irr_time) ) )
 
-### get specific activity
-gf1_spec_activity = numpy.divide( gf1_activity , gf1_mass)
-gf2_spec_activity = numpy.divide( gf2_activity , gf2_mass)
-gf3_spec_activity = numpy.divide( gf3_activity , gf3_mass)
+### get specific activity, convert from mg to g
+gf1_spec_activity = numpy.divide( gf1_activity , gf1_mass * 1e-3)
+gf2_spec_activity = numpy.divide( gf2_activity , gf2_mass * 1e-3)
+gf3_spec_activity = numpy.divide( gf3_activity , gf3_mass * 1e-3)
 
 ### get specific activity per charge
 gf1_spec_activity_percharge = numpy.divide( gf1_spec_activity , gf1_charge)
 gf2_spec_activity_percharge = numpy.divide( gf2_spec_activity , gf2_charge)
 gf3_spec_activity_percharge = numpy.divide( gf3_spec_activity , gf3_charge)
-
-### convert from Bq to muBq
-gf1_spec_activity_percharge = numpy.multiply( gf1_spec_activity_percharge , 1e6)
-gf2_spec_activity_percharge = numpy.multiply( gf2_spec_activity_percharge , 1e6)
-gf3_spec_activity_percharge = numpy.multiply( gf3_spec_activity_percharge , 1e6)
 
 ### find maximum
 ymax = numpy.max([gf1_spec_activity_percharge.max(),gf3_spec_activity_percharge.max(),gf3_spec_activity_percharge.max()])
@@ -76,11 +71,11 @@ for ind in range(len(gf1_xposition)):
 	axarr[gf1_yposition[ind], gf1_xposition[ind]].bar(      0.0, gf1_spec_activity_percharge[ind], width, color='r')
 	axarr[gf2_yposition[ind], gf2_xposition[ind]].bar(    width, gf2_spec_activity_percharge[ind], width, color='g')
 	axarr[gf3_yposition[ind], gf3_xposition[ind]].bar(2.0*width, gf3_spec_activity_percharge[ind], width, color='b')
-	axarr[gf1_yposition[ind], gf1_xposition[ind]].set_title('(%d,%d) Warm vs Cold = %f'% (gf1_yposition[ind], gf1_xposition[ind], gf3_spec_activity_percharge[ind]/gf2_spec_activity_percharge[ind] - 1.0))
+	axarr[gf1_yposition[ind], gf1_xposition[ind]].set_title('(%d,%d) Cold vs Warm = %f'% (gf1_yposition[ind], gf1_xposition[ind], gf3_spec_activity_percharge[ind]/gf2_spec_activity_percharge[ind] - 1.0))
 	axarr[gf1_yposition[ind], gf1_xposition[ind]].legend(['Epithermal','Total, Warm','Total, Cold'],loc=2,prop={'size':10})
 	axarr[gf1_yposition[ind], gf1_xposition[ind]].grid()
 	axarr[gf1_yposition[ind], gf1_xposition[ind]].set_ylim([0.0,1.1*ymax])
-pl.suptitle(r"Gold Foil Irradiation at TriCS, Nov 13, 2014.  Units in $\mu$Bq $\mu$C$^{-1}$ mg$^{-1}$")
+pl.suptitle(r"Gold Foil Irradiation at TriCS, Nov 13, 2014.  Units in Bq $\mu$C$^{-1}$ g$^{-1}$")
 pl.show()
 
 ### make 'images'
@@ -101,7 +96,7 @@ axarr[1].set_title('Total, Warm')
 axarr[2].imshow(gf3_img,interpolation='None',vmin=0,vmax=ymax)
 axarr[2].set_title('Total, Cold')
 cbar=pl.colorbar(im,ax=axarr[2])
-cbar.set_label(r"$\mu$Bq $\mu$C$^{-1}$ mg$^{-1}$")
+cbar.set_label(r"Bq $\mu$C$^{-1}$ g$^{-1}$")
 pl.show()
 
 ### plot individual distributions on 3x3 square, own scales
@@ -109,13 +104,13 @@ fig, axarr = plt.subplots(1, 3)
 im=axarr[0].imshow(gf1_img,interpolation='None')
 axarr[0].set_title('Epithermal')
 cbar=pl.colorbar(im,ax=axarr[0])
-cbar.set_label(r"$\mu$Bq $\mu$C$^{-1}$ mg$^{-1}$")
+cbar.set_label(r"Bq $\mu$C$^{-1}$ g$^{-1}$")
 im=axarr[1].imshow(gf2_img,interpolation='None')
 axarr[1].set_title('Total, Warm')
 cbar=pl.colorbar(im,ax=axarr[1])
-cbar.set_label(r"$\mu$Bq $\mu$C$^{-1}$ mg$^{-1}$")
+cbar.set_label(r"Bq $\mu$C$^{-1}$ g$^{-1}$")
 im=axarr[2].imshow(gf3_img,interpolation='None')
 axarr[2].set_title('Total, Cold')
 cbar=pl.colorbar(im,ax=axarr[2])
-cbar.set_label(r"$\mu$Bq $\mu$C$^{-1}$ mg$^{-1}$")
+cbar.set_label(r"Bq $\mu$C$^{-1}$ g$^{-1}$")
 pl.show()
