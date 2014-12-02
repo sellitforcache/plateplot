@@ -13,6 +13,7 @@ import re
 ### set TeX
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
+plt.rc('font', size=16)
 
 def convert2lin(imgmat,latitude,sensitivity):
 	imgmat=numpy.multiply(imgmat,latitude/65535.0)
@@ -115,32 +116,32 @@ pix_y=0
 ext_x=0.0
 ext_y=0.0
 if fname=="TriCS":
-	total_current = 570.0
+	total_current = 570.0  # muC
 	beamdim=[40,80] #in mm
 	center=[105,99]
-	res_x = res_y = 50.0e-6 * 1000
+	res_x = res_y = 50.0e-6 * 1000  # microns to mm
 	latitude= 5
 	sensitivity= 10000
 	imgmat,res_x,res_y,pix_x,pix_y,ext_x,ext_y = read_tiff(fname,res_x,res_y,pix_x,pix_y,ext_x,ext_y)
-	numpy.divide(imgmat,total_current)
+	imgmat=numpy.divide(imgmat,total_current/1000.0)   # to mC
 elif fname=="HRPT":
-	total_current = 200.5
+	total_current = 200.5  # muC
 	beamdim=[40,150]   #in mm
 	center=[100,145.25]
-	res_x = res_y = 50.0e-6 * 1000
+	res_x = res_y = 50.0e-6 * 1000 # microns to mm
 	latitude= 5
 	sensitivity= 10000
 	imgmat,res_x,res_y,pix_x,pix_y,ext_x,ext_y = read_tiff(fname,res_x,res_y,pix_x,pix_y,ext_x,ext_y)
-	numpy.divide(imgmat,total_current)
+	imgmat=numpy.divide(imgmat,total_current/1000.0)   # to mC
 elif fname=="EIGER":
-	total_current = 261.0
+	total_current = 261.0  # muC
 	beamdim=[60,300]   #in mm
 	center=[101,215]
 	res_x = res_y = 100.0e-6 * 1000  #microns to mm
 	sensitivity= 10000
 	latitude= 5
 	imgmat,res_x,res_y,pix_x,pix_y,ext_x,ext_y = read_tiff(fname,res_x,res_y,pix_x,pix_y,ext_x,ext_y)
-	numpy.divide(imgmat,total_current)
+	imgmat=numpy.divide(imgmat,total_current/1000.0)   # to mC
 else:
 	a=re.match("eiger_mcstas/([a-zA-Z0-9.+\-_ ]+)",fname)
 	if a:
@@ -152,7 +153,7 @@ else:
 	else:
 		print "uhoh"
 
-print imgmat
+#print imgmat
 print ext_x,ext_y,pix_x,pix_y,res_x,res_y
 print "min",numpy.min(imgmat),"max",numpy.max(imgmat)
 
@@ -163,8 +164,7 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 	ax=f.gca()
 	imgplot=pl.imshow(imgmat, interpolation='bicubic', extent=[0,ext_x,0,ext_y], origin="lower", cmap="spectral")#, norm=PowerNorm(1, vmin=50000, vmax=100000))
 	cbar=pl.colorbar(imgplot)
-	cbar.set_label(r"Counts (A.U. / $\mu$C)")
-	fname=escape_tex(fname)
+	cbar.set_label(r"Counts (A.U. / mA$\cdot$s)")
 	ax.set_title(fname.replace(r"_",r'\_'))
 	ax.set_xlabel(r"x (mm)")
 	ax.set_ylabel(r"y (mm)")
@@ -213,13 +213,13 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 			avg_y.append(numpy.mean(imgmat[row,col_lower:col_upper]))
 		p_avg =ax.plot(numpy.multiply(range(0,pix_y),res_y),avg_y,color='r',label="x = %d mm"%(loc_x*res_x))
 		v_lims=ax.get_ylim()
-		p_beam=ax.plot([beam_y1,beam_y1],[v_lims[0],v_lims[1]],color='k',linestyle='-')  ##plot beam ports
-		p_beam=ax.plot([beam_y2,beam_y2],[v_lims[0],v_lims[1]],color='k',linestyle='-')
-		p_wire=ax.plot([center[1],center[1]],[v_lims[0],v_lims[1]],color='c',linestyle='--')
-		pl.legend([p_avg[0],p_beam[0],p_wire[0]],["x = %d mm"%(loc_x*res_x),"Port boundary","Cd wire"],loc=1)
+		p_beam=ax.plot([beam_y1,beam_y1],[v_lims[0],1.2*v_lims[1]],color='k',linestyle='-')  ##plot beam ports
+		p_beam=ax.plot([beam_y2,beam_y2],[v_lims[0],1.2*v_lims[1]],color='k',linestyle='-')
+		p_wire=ax.plot([center[1],center[1]],[v_lims[0],1.2*v_lims[1]],color='c',linestyle='--')
+		pl.legend([p_avg[0],p_beam[0],p_wire[0]],["x = %d mm"%(loc_x*res_x),"Port boundary","Cd wire"],loc=1,prop={'size':12})
 		ax.set_title("Vertical average over %d pixels" % width)
 		ax.set_xlabel("y (mm)")
-		ax.set_ylabel(r"Counts (A.U. / $\mu$C)")
+		ax.set_ylabel(r"Counts (A.U. / mA$\cdot$s)")
 		ax.set_xlim([0,ext_y])
 		ax.grid("on")
 		#ax.legend()
@@ -227,7 +227,7 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		fig.savefig(fname+"_vert.pdf",dpi=300)
 		old_axis=ax.axis()
 		if fname=="TriCS":
-			ax.axis([50.0,150.0,11,15])
+			ax.axis([50.0,150.0,11,30])
 		elif fname=="HRPT":
 			ax.axis([60.0,230.0,4,5])
 		fig.savefig(fname+"_vert_zoom.pdf",dpi=300)
@@ -264,17 +264,17 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		v_lims=ax.get_ylim()
 		p_beam=ax.plot([beam_x1,beam_x1],[v_lims[0],v_lims[1]],color='k',linestyle='-')  ##plot beam ports
 		p_beam=ax.plot([beam_x2,beam_x2],[v_lims[0],v_lims[1]],color='k',linestyle='-')
-		pl.legend( [p_avg1[0],p_avg2[0],p_beam[0]],["y = %d mm"%(loc_y1*res_y),"y = %d mm"%(loc_y2*res_y),"Port boundary"],loc=1)
+		pl.legend( [p_avg1[0],p_avg2[0],p_beam[0]],["y = %d mm"%(loc_y1*res_y),"y = %d mm"%(loc_y2*res_y),"Port boundary"],loc=1,prop={'size':12})
 		ax.set_title("Horizontal average over %d pixels"%width)
 		ax.set_xlabel("x (mm)")
-		ax.set_ylabel(r"Counts (A.U. / $\mu$C)")
+		ax.set_ylabel(r"Counts (A.U. / mA$\cdot$s)")
 		ax.grid("on")
 		ax.set_xlim([0,ext_x])
 		fig=ax.get_figure()
 		fig.savefig(fname+"_horiz.pdf",dpi=300)
 		old_axis=ax.axis()
 		if fname=="TriCS":
-			ax.axis([70.0,130.0,11,15])
+			ax.axis([70.0,130.0,11,30])
 		elif fname=="HRPT":
 			ax.axis([60.0,140.0,3.8,5])
 		fig.savefig(fname+"_horiz_zoom.pdf",dpi=300)
@@ -290,7 +290,7 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		ax.set_ylim([0,pix_y*res])
 		### calculate entire mean
 		blockmean = numpy.mean(imgmat[loc_y1:loc_y2,loc_x1:loc_x2])
-		ax.set_title(fname+r" BLOCK AVG (A.U. / $\mu$C) = %f"%blockmean)
+		ax.set_title(fname+r" BLOCK AVG (A.U. / mA$\cdot$s) = %f"%blockmean)
 		pl.show()
 	else:
 		pl.show()
@@ -303,7 +303,7 @@ elif plottype=="3d":
 	ax.plot_surface(X, Y, imgmat[loc_y1:loc_y2,width:loc_x],cmap=pl.cm.spectral,linewidth=0)
 	ax.set_xlabel('x')
 	ax.set_ylabel('y')
-	ax.set_zlabel('Counts')
+	ax.set_zlabel(r'Counts (A.U. / mA$\cdot$s)')
 	#ax.auto_scale_xyz([width, loc_x], [loc_y1, loc_y2], [0, 65500])
 	pl.show()
 else:
