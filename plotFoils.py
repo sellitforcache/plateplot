@@ -81,6 +81,16 @@ gf1_spec_activity_percharge 	= numpy.divide( gf1_spec_activity ,         gf1_cha
 gf2_spec_activity_percharge 	= numpy.divide( gf2_spec_activity ,         gf2_charge / 1000.0)
 gf3_spec_activity_percharge 	= numpy.divide( gf3_spec_activity ,         gf3_charge / 1000.0)
 
+### print row averages and epithermal ratio
+#ra1=numpy.mean(gf1_spec_activity_percharge[0:3]),numpy.mean(gf1_spec_activity_percharge[3:6]),numpy.mean(gf1_spec_activity_percharge[6:9])
+#ra2=numpy.mean(gf2_spec_activity_percharge[0:3]),numpy.mean(gf2_spec_activity_percharge[3:6]),numpy.mean(gf2_spec_activity_percharge[6:9])
+#ra3=numpy.mean(gf3_spec_activity_percharge[0:3]),numpy.mean(gf3_spec_activity_percharge[3:6]),numpy.mean(gf3_spec_activity_percharge[6:9])
+#print "gf1_spec_activity_percharge",ra1
+#print "gf2_spec_activity_percharge",ra2
+#print "gf3_spec_activity_percharge",ra3
+#print "gf1/gf2",numpy.divide(ra1,ra2)
+#print numpy.mean(numpy.divide(ra1,ra2))
+
 ### scale for solid angle specific activity per charge
 #gf1_jun_spec_activity_percharge	= numpy.multiply( gf1_jun_spec_activity_percharge ,  hrpt_scale)
 #gf1_spec_activity_percharge 	= numpy.multiply( gf1_spec_activity_percharge     , trics_scale)
