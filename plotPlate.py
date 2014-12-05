@@ -247,7 +247,7 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		p_wire=ax.plot([center[1],center[1]],[v_lims[0],1.2*v_lims[1]],color='fuchsia',linestyle='--')
 		## make legend
 		pl.legend([p_avg[0],p_beam[0],p_wire[0]],["x = %d mm"%(loc_x*res_x),"Port boundary","Cd wire"],loc=1,prop={'size':12}, fancybox=True, framealpha=0.5)
-		ax.set_title("Vertical average over %d pixels" % width)
+		#ax.set_title("Vertical average over %d pixels" % width)
 		ax.set_xlabel("y (mm)")
 		ax.set_ylabel(r"Counts (A.U. / mA$\cdot$s)")
 		ax.set_xlim([0,ext_y])
@@ -272,7 +272,6 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		ax.text(133,  16, r"\begin{center} Region \\ 3 \end{center}",bbox=props,fontsize=12)
 		## legend
 		pl.legend( [p_avg[0],p_beam[0],p_wire[0],p_b1[0]],["x = %d mm"%(loc_x*res_x),"Port boundary","Cd wire","Region boundary"],loc=1,prop={'size':12}, fancybox=True, framealpha=1.0)
-		
 		fig.savefig(fname+"_vert_zoom.pdf",dpi=300)
 		ax.axis(old_axis)
 		pl.show()
@@ -310,7 +309,7 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		## legend
 		pl.legend( [p_avg1[0],p_avg2[0],p_beam[0]],["y = %d mm"%(loc_y1*res_y),"y = %d mm"%(loc_y2*res_y),"Port boundary"],loc=1,prop={'size':12}, fancybox=True, framealpha=1.0)
 		## title, etc
-		ax.set_title("Horizontal average over %d pixels"%width)
+		#ax.set_title("Horizontal average over %d pixels"%width)
 		ax.set_xlabel("x (mm)")
 		ax.set_ylabel(r"Counts (A.U. / mA$\cdot$s)")
 		ax.grid("on")
@@ -333,7 +332,7 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		ax.text(100,  16, r"\begin{center} Region \\ 2 \end{center}",bbox=props,fontsize=12)
 		ax.text(119,  16, r"\begin{center} Region \\ 3 \end{center}",bbox=props,fontsize=12)
 		## legend
-		pl.legend( [p_avg1[0],p_avg2[0],p_beam[0],p_b1[0]],["y = %d mm"%(loc_y1*res_y),"y = %d mm"%(loc_y2*res_y),"Port boundary","Region boundary"],loc=1,prop={'size':12}, fancybox=True, framealpha=1.0)
+		pl.legend( [p_avg1[0],p_avg2[0],p_beam[0],p_b1[0]],["y = %d mm"%(loc_y1*res_y),"y = %d mm"%(loc_y2*res_y),"Port boundary","Region boundary"],loc=2,prop={'size':12}, fancybox=True, framealpha=1.0)
 		## save zoomed
 		fig.savefig(fname+"_horiz_zoom.pdf",dpi=300)
 		ax.axis(old_axis)
