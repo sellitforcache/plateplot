@@ -35,6 +35,15 @@ gf1_jun_mass		= numpy.array([41.07,42.28,3.04,3.91,4.14,3.20,3.51,3.47,3.22])
 gf1_jun_xposition	= [0,1,2,0,1,2,0,1,2]
 gf1_jun_yposition	= [0,0,0,1,1,1,2,2,2]
 
+### data for gold foil 1 on June 13 2013 irradiation at HRPT
+gf2_jun_charge	 	= 59118.0  # muC, from plotbeam
+gf2_jun_irr_time    = 0.0
+gf2_jun_mea_time	= 0.0+14.0/24.0+23.0/(24.0*60.0)  # in days, time difference from irradiation and the reported GF analysis
+gf2_jun_activity	= numpy.array([8.8,8.5,7.1,9.2,9.3,8.9,14.2,14.4,10.9])
+gf2_jun_mass		= numpy.array([29.32,29.01,24.7,27.23,30.9,31.21,32.27,31.15,30.24])
+gf2_jun_xposition	= [0,1,2,0,1,2,0,1,2]
+gf2_jun_yposition	= [0,0,0,1,1,1,2,2,2]
+
 
 ### data for gold foil 1, cadmium, epithermal flux, Nov. 14, 2014
 gf1_charge	 		= 64652.5  # muC, from plotbeam
@@ -71,24 +80,31 @@ gf3_yposition		= [0,0,0,1,1,1,2,2,2]
 
 ### get specific activity, convert from mg to g
 gf1_jun_spec_activity 	= numpy.divide( gf1_jun_activity , gf1_jun_mass * 1e-3)
+gf2_jun_spec_activity 	= numpy.divide( gf2_jun_activity , gf2_jun_mass * 1e-3)
 gf1_spec_activity		= numpy.divide( gf1_activity ,         gf1_mass * 1e-3)
 gf2_spec_activity		= numpy.divide( gf2_activity ,         gf2_mass * 1e-3)
 gf3_spec_activity		= numpy.divide( gf3_activity ,         gf3_mass * 1e-3)
 
 ### get specific activity per charge
 gf1_jun_spec_activity_percharge = numpy.divide( gf1_jun_spec_activity , gf1_jun_charge / 1000.0)
+gf2_jun_spec_activity_percharge = numpy.divide( gf2_jun_spec_activity , gf2_jun_charge / 1000.0)
 gf1_spec_activity_percharge 	= numpy.divide( gf1_spec_activity ,         gf1_charge / 1000.0)
 gf2_spec_activity_percharge 	= numpy.divide( gf2_spec_activity ,         gf2_charge / 1000.0)
 gf3_spec_activity_percharge 	= numpy.divide( gf3_spec_activity ,         gf3_charge / 1000.0)
 
 ### print row averages and epithermal ratio
-#ra1=numpy.mean(gf1_spec_activity_percharge[0:3]),numpy.mean(gf1_spec_activity_percharge[3:6]),numpy.mean(gf1_spec_activity_percharge[6:9])
-#ra2=numpy.mean(gf2_spec_activity_percharge[0:3]),numpy.mean(gf2_spec_activity_percharge[3:6]),numpy.mean(gf2_spec_activity_percharge[6:9])
-#ra3=numpy.mean(gf3_spec_activity_percharge[0:3]),numpy.mean(gf3_spec_activity_percharge[3:6]),numpy.mean(gf3_spec_activity_percharge[6:9])
-#print "gf1_spec_activity_percharge",ra1
-#print "gf2_spec_activity_percharge",ra2
-#print "gf3_spec_activity_percharge",ra3
-#print "gf1/gf2",numpy.divide(ra1,ra2)
+ra1_jun=numpy.mean(gf1_jun_spec_activity_percharge[0:3]),numpy.mean(gf1_jun_spec_activity_percharge[3:6]),numpy.mean(gf1_jun_spec_activity_percharge[6:9])
+ra2_jun=numpy.mean(gf2_jun_spec_activity_percharge[0:3]),numpy.mean(gf2_jun_spec_activity_percharge[3:6]),numpy.mean(gf2_jun_spec_activity_percharge[6:9])
+ra1=numpy.mean(gf1_spec_activity_percharge[0:3]),numpy.mean(gf1_spec_activity_percharge[3:6]),numpy.mean(gf1_spec_activity_percharge[6:9])
+ra2=numpy.mean(gf2_spec_activity_percharge[0:3]),numpy.mean(gf2_spec_activity_percharge[3:6]),numpy.mean(gf2_spec_activity_percharge[6:9])
+ra3=numpy.mean(gf3_spec_activity_percharge[0:3]),numpy.mean(gf3_spec_activity_percharge[3:6]),numpy.mean(gf3_spec_activity_percharge[6:9])
+print "gf1_spec_activity_percharge",ra1
+print "gf2_spec_activity_percharge",ra2
+print "gf3_spec_activity_percharge",ra3
+print "gf1_spec_activity_percharge - JUNE HRPT",ra1_jun
+print "gf2_spec_activity_percharge - JUNE HRPT",ra2_jun
+print "epithermal ratio",numpy.divide(ra1,ra2)
+print "epithermal ratio - JUN HRPT",numpy.divide(ra2_jun,ra1_jun)
 #print numpy.mean(numpy.divide(ra1,ra2))
 
 ### scale for solid angle specific activity per charge

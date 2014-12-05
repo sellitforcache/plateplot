@@ -6,6 +6,7 @@ import pylab as pl
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d, Axes3D
 from matplotlib.colors import LogNorm, PowerNorm, Normalize
+from matplotlib import cm
 import sys
 import numpy
 import re
@@ -14,6 +15,18 @@ import re
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif')
 plt.rc('font', size=16)
+
+def draw_foils(ax,origin=[0,0,0]):
+	d2d 	= 11.0
+	dia 	= 10.0
+	r   	= dia/2.0 
+	res 	= 200
+	a    	= numpy.linspace(0,2.0*numpy.pi,res)
+	centers = [[origin[0]-d2d,origin[1]+d2d],[origin[0],origin[1]+d2d],[origin[0]+d2d,origin[1]+d2d],[origin[0]-d2d,origin[1]],[origin[0],origin[1]],[origin[0]+d2d,origin[1]],[origin[0]-d2d,origin[1]-d2d],[origin[0],origin[1]-d2d],[origin[0]+d2d,origin[1]-d2d]]
+	for c in centers:
+		x = r*numpy.sin(a) + c[0]
+		y = r*numpy.cos(a) + c[1]
+		ax.plot(x,y,color='w')
 
 def convert2lin(imgmat,latitude,sensitivity):
 	imgmat=numpy.multiply(imgmat,latitude/65535.0)
@@ -115,6 +128,7 @@ pix_x=0
 pix_y=0
 ext_x=0.0
 ext_y=0.0
+lower_limit=0.5
 if fname=="TriCS":
 	total_current = 570.0  # muC
 	beamdim=[40,80] #in mm
@@ -124,6 +138,7 @@ if fname=="TriCS":
 	sensitivity= 10000
 	imgmat,res_x,res_y,pix_x,pix_y,ext_x,ext_y = read_tiff(fname,res_x,res_y,pix_x,pix_y,ext_x,ext_y)
 	imgmat=numpy.divide(imgmat,total_current/1000.0)   # to mC
+	imgmat[imgmat<lower_limit]=0.0
 elif fname=="HRPT":
 	total_current = 200.5  # muC
 	beamdim=[40,150]   #in mm
@@ -162,7 +177,10 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 	### main plot
 	f=pl.figure(figsize=(ext_x*1.3*0.03,ext_y*0.03))
 	ax=f.gca()
-	imgplot=pl.imshow(imgmat, interpolation='bicubic', extent=[0,ext_x,0,ext_y], origin="lower", cmap="spectral")#, norm=PowerNorm(1, vmin=50000, vmax=100000))
+	my_cmap = cm.get_cmap('spectral')
+	my_cmap.set_under('w')
+	imgplot=pl.imshow(imgmat, interpolation='bicubic', extent=[0,ext_x,0,ext_y], origin="lower", cmap=my_cmap)#, norm=PowerNorm(1, vmin=50000, vmax=100000))
+	imgplot.set_clim(lower_limit,numpy.max(imgmat))
 	cbar=pl.colorbar(imgplot)
 	cbar.set_label(r"Counts (A.U. / mA$\cdot$s)")
 	ax.set_title(fname.replace(r"_",r'\_'))
@@ -196,6 +214,8 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 			ax.plot([beam_x1,beam_x2,beam_x2,beam_x1,beam_x1],[beam_y1,beam_y1,beam_y2,beam_y2,beam_y1],color='w',alpha=1)
 		except NameError:
 			pass
+		### plot the foil positions, origin in mm
+		draw_foils(ax,origin=center)
 		### set image extent
 		ax.set_xlim([0,pix_x*res_x])
 		ax.set_ylim([0,pix_y*res_y])
@@ -204,6 +224,14 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		#fig.tight_layout()
 		fig.set_frameon(False)
 		fig.savefig(fname+"_fig.pdf",dpi=300)
+		### zoom into the port area
+		old_axis=ax.axis()
+		if fname=="TriCS":
+			ax.axis([center[0]-beamdim[0]/1.9,center[0]+beamdim[0]/1.9,center[1]-beamdim[1]/1.9,center[1]+beamdim[1]/1.9])
+		elif fname=="HRPT":
+			ax.axis([60.0,230.0,4,5])
+		fig.savefig(fname+"_fig_zoom.pdf",dpi=300)
+		ax.axis(old_axis)
 		pl.show()
 		### make vertical average plot at loc_x
 		plt = pl.plt
