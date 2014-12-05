@@ -241,10 +241,12 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 			avg_y.append(numpy.mean(imgmat[row,col_lower:col_upper]))
 		p_avg =ax.plot(numpy.multiply(range(0,pix_y),res_y),avg_y,color='r',label="x = %d mm"%(loc_x*res_x))
 		v_lims=ax.get_ylim()
-		p_beam=ax.plot([beam_y1,beam_y1],[v_lims[0],1.2*v_lims[1]],color='k',linestyle='-')  ##plot beam ports
+		## plot beam ports
+		p_beam=ax.plot([beam_y1,beam_y1],[v_lims[0],1.2*v_lims[1]],color='k',linestyle='-')  
 		p_beam=ax.plot([beam_y2,beam_y2],[v_lims[0],1.2*v_lims[1]],color='k',linestyle='-')
-		p_wire=ax.plot([center[1],center[1]],[v_lims[0],1.2*v_lims[1]],color='c',linestyle='--')
-		pl.legend([p_avg[0],p_beam[0],p_wire[0]],["x = %d mm"%(loc_x*res_x),"Port boundary","Cd wire"],loc=1,prop={'size':12})
+		p_wire=ax.plot([center[1],center[1]],[v_lims[0],1.2*v_lims[1]],color='fuchsia',linestyle='--')
+		## make legend
+		pl.legend([p_avg[0],p_beam[0],p_wire[0]],["x = %d mm"%(loc_x*res_x),"Port boundary","Cd wire"],loc=1,prop={'size':12}, fancybox=True, framealpha=0.5)
 		ax.set_title("Vertical average over %d pixels" % width)
 		ax.set_xlabel("y (mm)")
 		ax.set_ylabel(r"Counts (A.U. / mA$\cdot$s)")
@@ -258,6 +260,19 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 			ax.axis([50.0,150.0,11,30])
 		elif fname=="HRPT":
 			ax.axis([60.0,230.0,4,5])
+		## plot region boundaries AFTER MAIN SAVE.
+		p_b1=ax.plot([55,55],  [15,27],color='c',linestyle='-')  
+		p_b2=ax.plot([67,67],  [15,27],color='c',linestyle='-')
+		p_b3=ax.plot([131,131],[15,27],color='c',linestyle='-')
+		p_b3=ax.plot([146,146],[15,27],color='c',linestyle='-')
+		## mark regions boundaries
+		props = dict(boxstyle='round', facecolor='wheat', alpha=1.0)
+		ax.text(57,   16, r"\begin{center} Region \\ 1 \end{center}",bbox=props,fontsize=12)
+		ax.text(85,   16, r"\begin{center} Region \\ 2 \end{center}",bbox=props,fontsize=12)
+		ax.text(133,  16, r"\begin{center} Region \\ 3 \end{center}",bbox=props,fontsize=12)
+		## legend
+		pl.legend( [p_avg[0],p_beam[0],p_wire[0],p_b1[0]],["x = %d mm"%(loc_x*res_x),"Port boundary","Cd wire","Region boundary"],loc=1,prop={'size':12}, fancybox=True, framealpha=1.0)
+		
 		fig.savefig(fname+"_vert_zoom.pdf",dpi=300)
 		ax.axis(old_axis)
 		pl.show()
@@ -292,7 +307,9 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 		v_lims=ax.get_ylim()
 		p_beam=ax.plot([beam_x1,beam_x1],[v_lims[0],v_lims[1]],color='k',linestyle='-')  ##plot beam ports
 		p_beam=ax.plot([beam_x2,beam_x2],[v_lims[0],v_lims[1]],color='k',linestyle='-')
-		pl.legend( [p_avg1[0],p_avg2[0],p_beam[0]],["y = %d mm"%(loc_y1*res_y),"y = %d mm"%(loc_y2*res_y),"Port boundary"],loc=1,prop={'size':12})
+		## legend
+		pl.legend( [p_avg1[0],p_avg2[0],p_beam[0]],["y = %d mm"%(loc_y1*res_y),"y = %d mm"%(loc_y2*res_y),"Port boundary"],loc=1,prop={'size':12}, fancybox=True, framealpha=1.0)
+		## title, etc
 		ax.set_title("Horizontal average over %d pixels"%width)
 		ax.set_xlabel("x (mm)")
 		ax.set_ylabel(r"Counts (A.U. / mA$\cdot$s)")
@@ -305,6 +322,19 @@ if plottype=="plot" or plottype=="averages" or plottype=="total_average":
 			ax.axis([70.0,130.0,11,30])
 		elif fname=="HRPT":
 			ax.axis([60.0,140.0,3.8,5])
+		## plot region boundaries AFTER MAIN SAVE.
+		p_b1=ax.plot([75,75],  [15,27],color='c',linestyle='-')  
+		p_b2=ax.plot([88,88],  [15,27],color='c',linestyle='-')
+		p_b3=ax.plot([118,118],[15,27],color='c',linestyle='-')
+		p_b3=ax.plot([125,125],[15,27],color='c',linestyle='-')
+		## mark regions boundaries
+		props = dict(boxstyle='round', facecolor='wheat', alpha=1.0)
+		ax.text(78,   16, r"\begin{center} Region \\ 1 \end{center}",bbox=props,fontsize=12)
+		ax.text(100,  16, r"\begin{center} Region \\ 2 \end{center}",bbox=props,fontsize=12)
+		ax.text(119,  16, r"\begin{center} Region \\ 3 \end{center}",bbox=props,fontsize=12)
+		## legend
+		pl.legend( [p_avg1[0],p_avg2[0],p_beam[0],p_b1[0]],["y = %d mm"%(loc_y1*res_y),"y = %d mm"%(loc_y2*res_y),"Port boundary","Region boundary"],loc=1,prop={'size':12}, fancybox=True, framealpha=1.0)
+		## save zoomed
 		fig.savefig(fname+"_horiz_zoom.pdf",dpi=300)
 		ax.axis(old_axis)
 		pl.show()
