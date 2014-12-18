@@ -35,7 +35,7 @@ gf1_jun_mass		= numpy.array([41.07,42.28,3.04,3.91,4.14,3.20,3.51,3.47,3.22])
 gf1_jun_xposition	= [0,1,2,0,1,2,0,1,2]
 gf1_jun_yposition	= [0,0,0,1,1,1,2,2,2]
 
-### data for gold foil 1 on June 13 2013 irradiation at HRPT
+### data for gold foil 2 on June 13 2013 irradiation at HRPT
 gf2_jun_charge	 	= 59118.0  # muC, from plotbeam
 gf2_jun_irr_time    = 0.0
 gf2_jun_mea_time	= 0.0+14.0/24.0+23.0/(24.0*60.0)  # in days, time difference from irradiation and the reported GF analysis

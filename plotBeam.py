@@ -69,7 +69,8 @@ z=[]
 time_from_zero=[]
 t=0
 
-fig=pl.figure(figsize=(8,1.75))
+asp=7
+fig=pl.figure(figsize=(8,asp))
 ax=fig.gca()
 
 for line in datf:
@@ -91,6 +92,6 @@ ax.set_ylim([ylim[0]*1.1,max(current)*1.1])
 ax.set_xlabel("Time (s) from "+time_str[0]+", "+date_str[0])
 ax.set_ylabel(r"$\mu$A")
 ax.set_title(r"SINQ Proton Current, Total Charge = "+total_charge_str+r" $\mu$C")
-ax.set_aspect(0.5)
+ax.set_aspect(2.0*asp/8.0)
 fig.savefig(fname+".pdf",dpi=300)
 pl.show()
