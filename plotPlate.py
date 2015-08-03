@@ -128,7 +128,7 @@ pix_y=0
 ext_x=0.0
 ext_y=0.0
 lower_limit=0.5
-if fname=="TriCS":
+if fname[-5:]=="TriCS":
 	total_current = 570.0  # muC
 	beamdim=[40,80] #in mm
 	center=[105,99]
@@ -138,7 +138,7 @@ if fname=="TriCS":
 	imgmat,res_x,res_y,pix_x,pix_y,ext_x,ext_y = read_tiff(fname,res_x,res_y,pix_x,pix_y,ext_x,ext_y)
 	imgmat=numpy.divide(imgmat,total_current/1000.0)   # to mC
 	imgmat[imgmat<lower_limit]=0.0
-elif fname=="HRPT":
+elif fname[-4:]=="HRPT":
 	total_current = 200.5  # muC
 	beamdim=[40,150]   #in mm
 	center=[100,145.25]
@@ -147,7 +147,7 @@ elif fname=="HRPT":
 	sensitivity= 10000
 	imgmat,res_x,res_y,pix_x,pix_y,ext_x,ext_y = read_tiff(fname,res_x,res_y,pix_x,pix_y,ext_x,ext_y)
 	imgmat=numpy.divide(imgmat,total_current/1000.0)   # to mC
-elif fname=="EIGER":
+elif fname[-5:]=="EIGER":
 	total_current = 261.0  # muC
 	beamdim=[60,300]   #in mm
 	center=[101,215]
@@ -173,6 +173,15 @@ elif fname=="ninkasi.png":
         imgmat = numpy.divide(imgmat,total_current/1000.0)
 	lower_limit = 3.0
 	imgmat[imgmat<lower_limit]=0.0
+elif fname[-4:]==".tif":
+	total_current = 1  # muC
+        beamdim=[60,300]   #in mm
+        center=[101,215]
+        res_x = res_y = 100.0e-6 * 1000  #microns to mm
+        sensitivity= 10000
+        latitude= 5
+        imgmat,res_x,res_y,pix_x,pix_y,ext_x,ext_y = read_tiff(fname,res_x,res_y,pix_x,pix_y,ext_x,ext_y)
+        imgmat=numpy.divide(imgmat,total_current/1000.0)
 else:
 	a=re.match("eiger_mcstas/([a-zA-Z0-9.+\-_ ]+)",fname)
 	if a:
