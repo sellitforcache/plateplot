@@ -5,7 +5,6 @@
 import pylab as pl
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d, Axes3D
-from matplotlib.colors import LogNorm, PowerNorm, Normalize
 from matplotlib import cm
 import sys
 import numpy
@@ -157,6 +156,23 @@ elif fname=="EIGER":
 	latitude= 5
 	imgmat,res_x,res_y,pix_x,pix_y,ext_x,ext_y = read_tiff(fname,res_x,res_y,pix_x,pix_y,ext_x,ext_y)
 	imgmat=numpy.divide(imgmat,total_current/1000.0)   # to mC
+elif fname=="ninkasi.png":
+	total_current = 261.0  # muC
+        beamdim=[60,300]   #in mm
+        center=[101,215]
+        res_x = res_y = 100.0e-6 * 1000  #microns to mm
+        sensitivity= 10000
+        latitude= 5
+        imgmat = numpy.linalg.norm(pl.imread(fname),ord=2,axis=2)
+	res_x  = .1 
+	res_y  = .1
+	pix_x  = imgmat.shape[1]
+	pix_y  = imgmat.shape[0]
+	ext_x  = pix_x
+	ext_y  = pix_y
+        imgmat = numpy.divide(imgmat,total_current/1000.0)
+	lower_limit = 3.0
+	imgmat[imgmat<lower_limit]=0.0
 else:
 	a=re.match("eiger_mcstas/([a-zA-Z0-9.+\-_ ]+)",fname)
 	if a:
