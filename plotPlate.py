@@ -173,7 +173,7 @@ elif fname=="ninkasi.png":
         imgmat = numpy.divide(imgmat,total_current/1000.0)
 	lower_limit = 3.0
 	imgmat[imgmat<lower_limit]=0.0
-elif fname[-4:]==".tif":
+elif fname[-4:]==".tif" or fname[-5:]==".tiff":
 	total_current = 1  # muC
         beamdim=[60,300]   #in mm
         center=[101,215]
